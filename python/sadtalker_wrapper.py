@@ -12,6 +12,10 @@ from argparse import ArgumentParser
 SADTALKER_DIR = Path(__file__).parent.parent / "sadtalker"
 sys.path.insert(0, str(SADTALKER_DIR))
 
+# CRITICAL: Set sys.argv[0] to point to inference.py in sadtalker directory
+# This is needed because SadTalker uses sys.argv[0] to determine its root path
+sys.argv[0] = str(SADTALKER_DIR / "inference.py")
+
 # Import SadTalker's main function
 from inference import main as sadtalker_inference
 
