@@ -1,0 +1,40 @@
+# SadTalker core dependencies - Python 3.13 compatible versions
+# These are the essential packages needed for SadTalker inference
+
+# Core dependencies
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+numpy>=1.26.0
+scipy>=1.11.0
+opencv-python>=4.8.0
+pillow>=10.0.0
+imageio>=2.31.0
+imageio-ffmpeg>=0.4.9
+librosa>=0.10.0
+face-alignment>=1.4.0
+resampy>=0.4.2
+pydub>=0.25.1
+scikit-image>=0.22.0
+tqdm>=4.66.0
+yacs>=0.1.8
+pyyaml>=6.0.1
+
+# Additional SadTalker-specific dependencies
+numba>=0.59.0
+kornia>=0.7.0
+joblib>=1.3.0
+av>=12.0.0
+safetensors>=0.4.0
+
+# TTS (OpenAI)
+openai>=1.0.0
+
+# Face processing libraries
+# Note: facexlib is needed even though basicsr has Python 3.13 issues
+facexlib>=0.3.0
+
+# Skip these - incompatible with Python 3.13 or not needed:
+# basicsr - has setup.py issues with Python 3.13, but facexlib may still work
+# gfpgan - depends on basicsr, only for face enhancement
+# gradio - only needed for web UI
