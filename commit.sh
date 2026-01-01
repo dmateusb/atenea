@@ -40,3 +40,18 @@ then
 else
     echo -e "${BLUE}ℹ️  Commit created locally. Push later with: git push origin main${NC}"
 fi
+
+# Usage examples:
+# ./commit.sh                                    # Default message
+# ./commit.sh "feat: add new feature"            # Custom message
+# ./commit.sh "fix: resolve bug in video gen"    # Bug fix
+# ./commit.sh "docs: update README"              # Documentation
+
+# Conventional Commit Types:
+# - feat: New feature
+# - fix: Bug fix
+# - docs: Documentation changes
+# - chore: Maintenance tasks
+# - refactor: Code refactoring
+# - test: Test updates
+# - style: Code style changes

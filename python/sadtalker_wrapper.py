@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """
 Wrapper script for SadTalker inference.
-This script lives in the sadtalker/ directory so that inference.py
-can correctly resolve relative paths using sys.argv[0].
+Adds SadTalker to Python path and calls inference.
 """
 import sys
 import os
 from pathlib import Path
 from argparse import ArgumentParser
+
+# Add SadTalker directory to Python path
+SADTALKER_DIR = Path(__file__).parent.parent / "sadtalker"
+sys.path.insert(0, str(SADTALKER_DIR))
 
 # Import SadTalker's main function
 from inference import main as sadtalker_inference
@@ -61,6 +64,10 @@ def main():
     sadtalker_args.z_near = 5.
     sadtalker_args.z_far = 15.
 
+    # Change to SadTalker directory for correct path resolution
+    original_cwd = os.getcwd()
+    os.chdir(SADTALKER_DIR)
+
     # Run SadTalker
     try:
         sadtalker_inference(sadtalker_args)
@@ -70,6 +77,8 @@ def main():
         import traceback
         traceback.print_exc()
         sys.exit(1)
+    finally:
+        os.chdir(original_cwd)
 
 if __name__ == '__main__':
     main()
