@@ -38,10 +38,6 @@ runpod.env
 # Generated content
 data/audio/*.mp3
 data/audio/*.wav
-data/images/*.png
-data/images/*.jpg
-data/images/*.jpeg
-!data/images/.gitkeep
 !data/audio/.gitkeep
 
 # Videos
