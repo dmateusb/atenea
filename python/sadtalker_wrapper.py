@@ -63,6 +63,7 @@ def main():
     sadtalker_args.camera_d = 10.
     sadtalker_args.z_near = 5.
     sadtalker_args.z_far = 15.
+    sadtalker_args.old_version = False
 
     # Change to SadTalker directory for correct path resolution
     original_cwd = os.getcwd()
