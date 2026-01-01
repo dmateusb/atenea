@@ -78,7 +78,7 @@ program
       // Generate video
       spinner.start(
         chalk.yellow(
-          'Generating talking head video (this will take 8-15 minutes for 1-minute video)...'
+          'Generating talking head video (3-4 min on GPU, 8-15 min on CPU for 1-min video)...'
         )
       );
 

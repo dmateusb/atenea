@@ -62,26 +62,17 @@ def generate_video(image_path: str, audio_path: str, output_path: str):
     ]
 
     try:
+        # Stream output in real-time instead of buffering
         result = subprocess.run(
             cmd,
             cwd=str(SADTALKER_DIR),  # Run from sadtalker directory
-            capture_output=True,
-            text=True,
-            check=True
+            check=True  # Removed capture_output to stream in real-time
         )
-
-        # Print output
-        if result.stdout:
-            print(result.stdout)
 
         print(f"✅ Video generated successfully: {output_path}")
         return True
     except subprocess.CalledProcessError as e:
-        print(f"❌ Error generating video:", file=sys.stderr)
-        if e.stdout:
-            print(e.stdout, file=sys.stderr)
-        if e.stderr:
-            print(e.stderr, file=sys.stderr)
+        print(f"❌ Error generating video (exit code {e.returncode})", file=sys.stderr)
         return False
     except Exception as e:
         print(f"❌ Unexpected error: {e}", file=sys.stderr)
