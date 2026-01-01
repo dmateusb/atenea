@@ -16,7 +16,7 @@ fi
 # Fix 2: Replace np.float with np.float64 (np.float removed in NumPy 2.0)
 if [ -f "sadtalker/src/face3d/util/my_awing_arch.py" ]; then
     echo "  → Fixing my_awing_arch.py (np.float → np.float64)"
-    sed -i.bak 's/astype(np\.float)/astype(np.float64)/g' sadtalker/src/face3d/util/my_awing_arch.py
+    sed -i.bak 's/np\.float\b/np.float64/g' sadtalker/src/face3d/util/my_awing_arch.py
     rm -f sadtalker/src/face3d/util/my_awing_arch.py.bak
 fi
 
@@ -59,5 +59,14 @@ def enhancer_generator_with_len(images, method='gfpgan', bg_upsampler='realesrga
         yield img
 EOF
 fi
+
+# Fix 5: Replace all remaining np.float, np.int, np.bool occurrences
+echo "  → Scanning for all NumPy deprecated type aliases..."
+find sadtalker/src -name "*.py" -type f -exec sed -i.bak \
+  -e 's/\bnp\.float\b/np.float64/g' \
+  -e 's/\bnp\.int\b/np.int64/g' \
+  -e 's/\bnp\.bool\b/np.bool_/g' \
+  {} \;
+find sadtalker/src -name "*.bak" -type f -delete
 
 echo "✅ NumPy 2.x compatibility fixes applied successfully"
