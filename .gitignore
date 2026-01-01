@@ -36,7 +36,8 @@ runpod.env
 .DS_Store
 
 # Generated content
-data/audio/*.mp3
+# Keep cached audio files (speech_<hash>.mp3) for reuse
+data/audio/speech_[0-9]*.mp3
 data/audio/*.wav
 !data/audio/.gitkeep
 

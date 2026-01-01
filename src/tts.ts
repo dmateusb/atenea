@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import crypto from 'crypto';
 import OpenAI from 'openai';
 import type { TTSOptions } from './types.js';
 
@@ -19,8 +20,27 @@ function getOpenAIClient(): OpenAI {
   return openaiClient;
 }
 
+function getTextHash(text: string, voice: string, model: string): string {
+  const content = `${text}|${voice}|${model}`;
+  return crypto.createHash('sha256').update(content).digest('hex').substring(0, 16);
+}
+
 export async function generateSpeech(options: TTSOptions): Promise<string> {
   const { text, voice, model, outputPath } = options;
+
+  // Generate deterministic filename based on content hash
+  const hash = getTextHash(text, voice, model);
+  const outputDir = path.dirname(outputPath);
+  const cachedPath = path.join(outputDir, `speech_${hash}.mp3`);
+
+  // Check if cached audio exists
+  try {
+    await fs.access(cachedPath);
+    console.log(`♻️  Using cached audio: ${cachedPath}`);
+    return cachedPath;
+  } catch {
+    // Cache miss, generate new audio
+  }
 
   console.log(`🎙️  Generating speech with voice: ${voice}`);
 
@@ -35,13 +55,13 @@ export async function generateSpeech(options: TTSOptions): Promise<string> {
     const buffer = Buffer.from(await mp3.arrayBuffer());
 
     // Ensure directory exists
-    await fs.mkdir(path.dirname(outputPath), { recursive: true });
+    await fs.mkdir(outputDir, { recursive: true });
 
-    // Write audio file
-    await fs.writeFile(outputPath, buffer);
+    // Write audio file with hash-based name
+    await fs.writeFile(cachedPath, buffer);
 
-    console.log(`✅ Audio generated: ${outputPath}`);
-    return outputPath;
+    console.log(`✅ Audio generated: ${cachedPath}`);
+    return cachedPath;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`TTS generation failed: ${error.message}`);
