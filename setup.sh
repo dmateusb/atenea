@@ -51,6 +51,10 @@ if [ ! -d "sadtalker" ]; then
     git clone https://github.com/OpenTalker/SadTalker.git sadtalker
     echo "⚠️  Skipping SadTalker's requirements.txt (not Python 3.13 compatible)"
     echo "   Using our custom requirements.txt instead"
+
+    echo "🔧 Applying NumPy 2.x compatibility fixes..."
+    chmod +x fix_sadtalker_numpy2.sh
+    ./fix_sadtalker_numpy2.sh
 else
     echo "✅ SadTalker already cloned"
 fi

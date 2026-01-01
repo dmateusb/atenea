@@ -82,6 +82,10 @@ pip install -r requirements.txt
 # Clonar SadTalker (repositorio externo)
 git clone https://github.com/OpenTalker/SadTalker.git sadtalker
 
+# Aplicar parches para compatibilidad con NumPy 2.x
+chmod +x fix_sadtalker_numpy2.sh
+./fix_sadtalker_numpy2.sh
+
 # Descargar modelos de SadTalker (~3GB, toma 5-10 minutos)
 chmod +x download_models.sh
 ./download_models.sh
