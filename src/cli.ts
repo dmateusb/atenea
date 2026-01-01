@@ -63,22 +63,16 @@ program
       }
 
       // Setup paths
-      const timestamp = Date.now();
-      const audioPath = path.join(
-        __dirname,
-        '..',
-        'data',
-        'audio',
-        `speech_${timestamp}.mp3`
-      );
+      const audioDir = path.join(__dirname, '..', 'data', 'audio');
+      const tempAudioPath = path.join(audioDir, 'temp.mp3'); // Will be replaced by hash-based name
       const videoPath = path.resolve(options.output);
 
       console.log(chalk.blue('\n🎬 Starting video generation\n'));
 
-      // Generate audio from text
+      // Generate audio from text (returns actual cached path)
       spinner.start('Generating speech from text...');
       process.env.TTS_VOICE = options.voice;
-      await textToSpeech(inputText, audioPath);
+      const audioPath = await textToSpeech(inputText, tempAudioPath);
       spinner.succeed('Speech generated');
 
       // Generate video

@@ -4,7 +4,8 @@
       "Bash(du:*)",
       "Bash(git add:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nfix: make gfpgan import optional in face_enhancer\n\n- Added Fix 4 to patch script: replaces face_enhancer.py with stub\n- Gracefully handles missing gfpgan \\(not compatible with Python 3.11+\\)\n- Returns original images when GFPGAN unavailable\n- Face enhancement is optional feature, not required for video generation\n\nFixes ImportError: cannot import name ''GFPGANer'' from ''gfpgan''\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
