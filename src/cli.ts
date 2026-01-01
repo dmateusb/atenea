@@ -28,10 +28,17 @@ program
   .option('-a, --avatar <image>', 'Avatar image path', 'data/images/avatar.png')
   .option('-o, --output <file>', 'Output video path', 'output.mp4')
   .option('-v, --voice <voice>', 'TTS voice (nova, alloy, echo, etc.)', 'nova')
+  .option('--conservative', 'Use memory-optimized wrapper (for OOM issues)')
   .action(async (options) => {
     const spinner = ora();
 
     try {
+      // Set conservative mode if requested
+      if (options.conservative) {
+        process.env.USE_CONSERVATIVE = '1';
+        console.log(chalk.blue('🛡️  Using conservative mode (memory-optimized)\n'));
+      }
+
       // Validate OpenAI API key
       if (!process.env.OPENAI_API_KEY) {
         console.error(

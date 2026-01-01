@@ -46,7 +46,14 @@ def generate_video(image_path: str, audio_path: str, output_path: str):
     print(f"🎥 Output: {output_path}")
 
     # Use the wrapper script (in python/ directory, will be in repo)
-    wrapper_script = Path(__file__).parent / "sadtalker_wrapper.py"
+    # Set USE_CONSERVATIVE=1 environment variable to use memory-optimized wrapper
+    use_conservative = os.environ.get('USE_CONSERVATIVE', '0') == '1'
+    wrapper_name = "sadtalker_wrapper_conservative.py" if use_conservative else "sadtalker_wrapper.py"
+    wrapper_script = Path(__file__).parent / wrapper_name
+
+    if use_conservative:
+        print("🛡️  Using conservative wrapper (memory-optimized)")
+
     checkpoint_dir = SADTALKER_DIR / "checkpoints"
 
     # Call the wrapper script as a subprocess
