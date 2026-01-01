@@ -40,18 +40,42 @@ Para 100 videos: ~$2.30-$3.00
 
 Una vez el pod esté listo, click en **Connect** → **Start Jupyter Lab** o **SSH**
 
-### 3. Setup del Proyecto
+### 3. Instalar Node.js (requerido para el CLI)
+
+RunPod no incluye Node.js por defecto. Instálalo usando nvm:
+
+```bash
+# Instalar nvm (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+# Cargar nvm en la sesión actual
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Instalar Node.js 18 LTS
+nvm install 18
+nvm use 18
+
+# Verificar instalación
+node --version  # Debe mostrar v18.x.x
+npm --version   # Debe mostrar 9.x.x
+```
+
+### 4. Setup del Proyecto
 
 ```bash
 # Clonar el repositorio
 git clone https://github.com/dmateusb/atenea.git
 cd atenea
 
-# Crear virtual environment
+# Instalar dependencias de Node.js
+npm install
+
+# Crear virtual environment de Python
 python -m venv venv
 source venv/bin/activate
 
-# Instalar dependencias
+# Instalar dependencias de Python
 pip install --upgrade pip
 pip install -r requirements.txt
 
@@ -61,6 +85,9 @@ git clone https://github.com/OpenTalker/SadTalker.git sadtalker
 # Descargar modelos de SadTalker (~3GB, toma 5-10 minutos)
 chmod +x download_models.sh
 ./download_models.sh
+
+# Configurar OpenAI API Key
+echo "OPENAI_API_KEY=your-key-here" > .env
 ```
 
 **Nota**: SadTalker NO está en el repositorio de Atenea porque:
@@ -68,7 +95,7 @@ chmod +x download_models.sh
 - Los modelos pesan ~3GB
 - Se clona automáticamente durante el setup
 
-### 4. Verificar GPU y PyTorch
+### 5. Verificar GPU y PyTorch
 
 El template ya incluye PyTorch 2.1 con CUDA. Verifica la instalación:
 
@@ -94,7 +121,7 @@ pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https
 pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu118
 ```
 
-### 5. Generar Video
+### 6. Generar Video
 
 ```bash
 # Asegúrate de tener:
@@ -111,7 +138,7 @@ python python/generate_video.py \
   --output output.mp4
 ```
 
-### 6. Descargar Resultado
+### 7. Descargar Resultado
 
 ```bash
 # Desde Jupyter Lab, haz click derecho en output.mp4 → Download
@@ -120,7 +147,7 @@ python python/generate_video.py \
 scp root@<pod-ip>:/workspace/atenea/output.mp4 ./
 ```
 
-### 7. **IMPORTANTE**: Detener el Pod
+### 8. **IMPORTANTE**: Detener el Pod
 
 Una vez termines, **DETÉN EL POD** para no seguir pagando:
 1. RunPod Console → Pods

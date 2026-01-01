@@ -45,8 +45,8 @@ def generate_video(image_path: str, audio_path: str, output_path: str):
     print(f"🎵 Audio: {audio_path}")
     print(f"🎥 Output: {output_path}")
 
-    # Use the wrapper script inside sadtalker directory
-    wrapper_script = SADTALKER_DIR / "generate_wrapper.py"
+    # Use the wrapper script (in python/ directory, will be in repo)
+    wrapper_script = Path(__file__).parent / "sadtalker_wrapper.py"
     checkpoint_dir = SADTALKER_DIR / "checkpoints"
 
     # Call the wrapper script as a subprocess
