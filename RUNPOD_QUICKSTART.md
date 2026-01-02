@@ -57,20 +57,42 @@ echo "OPENAI_API_KEY='your-key-here'" > .env
 
 ## Running Video Generation
 
-### Basic Usage
+### Basic Usage (SadTalker)
 
 ```bash
 # Create input text
 echo "Hello, this is my first AI video!" > input.txt
 
-# Generate video
+# Generate video (default: SadTalker)
 npm run generate
+
+# Or explicitly specify model
+npm run generate -- --model sadtalker
 ```
+
+### Using Hallo2 (Better Quality)
+
+First install Hallo2 (one-time setup):
+```bash
+bash setup_hallo2.sh
+```
+
+Then generate:
+```bash
+# Generate with Hallo2 (slower but better quality)
+npm run generate -- --model hallo2
+```
+
+See [HALLO2_SETUP.md](HALLO2_SETUP.md) for details.
 
 ### With Conservative Mode (Recommended for First Run)
 
 ```bash
+# SadTalker with conservative mode
 npm run generate -- --conservative
+
+# Hallo2 with conservative mode
+npm run generate -- --model hallo2 --conservative
 ```
 
 ### In Persistent Session (Recommended)
@@ -142,6 +164,9 @@ npm run generate -- --conservative 2>&1 | tee generation.log
 # Different voice
 npm run generate -- --voice alloy
 
+# Different model
+npm run generate -- --model hallo2
+
 # Different input file
 npm run generate -- --input my-script.txt
 
@@ -149,7 +174,11 @@ npm run generate -- --input my-script.txt
 npm run generate -- --output my-video.mp4
 
 # Combine options
-npm run generate -- --voice nova --conservative --output result.mp4
+npm run generate -- \
+  --model hallo2 \
+  --voice nova \
+  --conservative \
+  --output result.mp4
 ```
 
 ## Performance Reference (RTX 4090)

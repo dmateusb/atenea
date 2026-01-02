@@ -9,12 +9,13 @@ export interface GenerateVideoParams {
   imagePath: string;
   audioPath: string;
   outputPath: string;
+  model?: 'sadtalker' | 'hallo2';
 }
 
 export async function generateVideo(
   params: GenerateVideoParams
 ): Promise<string> {
-  const { imagePath, audioPath, outputPath } = params;
+  const { imagePath, audioPath, outputPath, model = 'sadtalker' } = params;
 
   const pythonScript = path.join(
     __dirname,
@@ -25,12 +26,13 @@ export async function generateVideo(
   const venvPython = path.join(__dirname, '..', 'venv', 'bin', 'python3');
 
   console.log('🎬 Starting video generation...');
+  console.log(`🤖 Model: ${model.toUpperCase()}`);
   console.log(`📸 Image: ${imagePath}`);
   console.log(`🎵 Audio: ${audioPath}`);
   console.log(`🎥 Output: ${outputPath}`);
 
   return new Promise((resolve, reject) => {
-    const process = spawn(venvPython, [
+    const args = [
       pythonScript,
       '--image',
       imagePath,
@@ -38,7 +40,11 @@ export async function generateVideo(
       audioPath,
       '--output',
       outputPath,
-    ]);
+      '--model',
+      model,
+    ];
+
+    const process = spawn(venvPython, args);
 
     let stdout = '';
     let stderr = '';

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-SadTalker video generation script optimized for M3 Mac
+Multi-model video generation script
+Supports: SadTalker, Hallo2
 """
 import sys
 import os
@@ -9,8 +10,12 @@ import torch
 import subprocess
 from pathlib import Path
 
-# SadTalker directory
+# Model directories
 SADTALKER_DIR = Path(__file__).parent.parent / "sadtalker"
+HALLO2_DIR = Path(__file__).parent.parent / "hallo2"
+
+# Supported models
+SUPPORTED_MODELS = ['sadtalker', 'hallo2']
 
 def check_device():
     """Check available device (CUDA > CPU, skip MPS due to compatibility)"""
@@ -27,34 +32,52 @@ def check_device():
         print("⚠️  No GPU detected, using CPU")
         return "cpu", 384  # Balanced for CPU
 
-def generate_video(image_path: str, audio_path: str, output_path: str):
+def generate_video(image_path: str, audio_path: str, output_path: str, model: str = 'sadtalker'):
     """
-    Generate talking head video using SadTalker
+    Generate talking head video using specified model
 
     Args:
         image_path: Path to source image (avatar)
         audio_path: Path to audio file
         output_path: Path for output video
+        model: Model to use ('sadtalker' or 'hallo2')
     """
+    # Validate model
+    if model not in SUPPORTED_MODELS:
+        print(f"❌ Unsupported model: {model}", file=sys.stderr)
+        print(f"   Supported models: {', '.join(SUPPORTED_MODELS)}", file=sys.stderr)
+        return False
+
     # Check device and select appropriate resolution
     device, video_size = check_device()
 
-    print(f"🎬 Generating video with device: {device}")
+    print(f"🎬 Generating video with {model.upper()}")
+    print(f"⚙️  Device: {device}")
     print(f"📐 Resolution: {video_size}x{video_size}")
     print(f"📸 Image: {image_path}")
     print(f"🎵 Audio: {audio_path}")
     print(f"🎥 Output: {output_path}")
 
-    # Use the wrapper script (in python/ directory, will be in repo)
-    # Set USE_CONSERVATIVE=1 environment variable to use memory-optimized wrapper
-    use_conservative = os.environ.get('USE_CONSERVATIVE', '0') == '1'
-    wrapper_name = "sadtalker_wrapper_conservative.py" if use_conservative else "sadtalker_wrapper.py"
+    # Select wrapper based on model
+    if model == 'hallo2':
+        wrapper_name = "hallo2_wrapper.py"
+        checkpoint_dir = HALLO2_DIR / "checkpoints"
+
+        # Check if Hallo2 is installed
+        if not HALLO2_DIR.exists():
+            print(f"❌ Hallo2 not installed", file=sys.stderr)
+            print(f"   Run: bash setup_hallo2.sh", file=sys.stderr)
+            return False
+    else:  # sadtalker
+        # Set USE_CONSERVATIVE=1 environment variable to use memory-optimized wrapper
+        use_conservative = os.environ.get('USE_CONSERVATIVE', '0') == '1'
+        wrapper_name = "sadtalker_wrapper_conservative.py" if use_conservative else "sadtalker_wrapper.py"
+        checkpoint_dir = SADTALKER_DIR / "checkpoints"
+
+        if use_conservative:
+            print("🛡️  Using conservative wrapper (memory-optimized)")
+
     wrapper_script = Path(__file__).parent / wrapper_name
-
-    if use_conservative:
-        print("🛡️  Using conservative wrapper (memory-optimized)")
-
-    checkpoint_dir = SADTALKER_DIR / "checkpoints"
 
     # Call the wrapper script as a subprocess
     cmd = [
@@ -70,9 +93,12 @@ def generate_video(image_path: str, audio_path: str, output_path: str):
 
     try:
         # Stream output in real-time instead of buffering
-        result = subprocess.run(
+        # Set working directory based on model
+        work_dir = HALLO2_DIR if model == 'hallo2' else SADTALKER_DIR
+
+        subprocess.run(
             cmd,
-            cwd=str(SADTALKER_DIR),  # Run from sadtalker directory
+            cwd=str(work_dir),
             check=True  # Removed capture_output to stream in real-time
         )
 
@@ -86,10 +112,12 @@ def generate_video(image_path: str, audio_path: str, output_path: str):
         return False
 
 def main():
-    parser = argparse.ArgumentParser(description='Generate talking head video')
+    parser = argparse.ArgumentParser(description='Generate talking head video with multiple model support')
     parser.add_argument('--image', required=True, help='Path to source image')
     parser.add_argument('--audio', required=True, help='Path to audio file')
     parser.add_argument('--output', required=True, help='Path for output video')
+    parser.add_argument('--model', default='sadtalker', choices=SUPPORTED_MODELS,
+                        help=f'Model to use (default: sadtalker)')
 
     args = parser.parse_args()
 
@@ -105,8 +133,8 @@ def main():
     # Create output directory
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
 
-    # Generate video
-    success = generate_video(args.image, args.audio, args.output)
+    # Generate video with selected model
+    success = generate_video(args.image, args.audio, args.output, model=args.model)
     sys.exit(0 if success else 1)
 
 if __name__ == '__main__':

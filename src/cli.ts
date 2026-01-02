@@ -28,11 +28,20 @@ program
   .option('-a, --avatar <image>', 'Avatar image path', 'data/images/avatar.png')
   .option('-o, --output <file>', 'Output video path', 'output.mp4')
   .option('-v, --voice <voice>', 'TTS voice (nova, alloy, echo, etc.)', 'nova')
+  .option('-m, --model <model>', 'AI model (sadtalker, hallo2)', 'sadtalker')
   .option('--conservative', 'Use memory-optimized wrapper (for OOM issues)')
   .action(async (options) => {
     const spinner = ora();
 
     try {
+      // Validate model selection
+      const validModels = ['sadtalker', 'hallo2'];
+      if (!validModels.includes(options.model)) {
+        console.error(chalk.red(`❌ Invalid model: ${options.model}`));
+        console.log(chalk.yellow(`   Valid models: ${validModels.join(', ')}`));
+        process.exit(1);
+      }
+
       // Set conservative mode if requested
       if (options.conservative) {
         process.env.USE_CONSERVATIVE = '1';
@@ -93,6 +102,7 @@ program
         imagePath: avatarPath,
         audioPath,
         outputPath: videoPath,
+        model: options.model as 'sadtalker' | 'hallo2',
       });
 
       spinner.succeed('Video generated successfully!');
