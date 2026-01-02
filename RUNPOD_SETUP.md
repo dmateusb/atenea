@@ -68,6 +68,12 @@ npm --version   # Debe mostrar 9.x.x
 git clone https://github.com/dmateusb/atenea.git
 cd atenea
 
+# Instalar FFmpeg (requerido para procesamiento de video/audio)
+apt-get update && apt-get install -y ffmpeg
+
+# Verificar instalación de FFmpeg
+ffmpeg -version
+
 # Instalar dependencias de Node.js
 npm install
 
