@@ -1,21 +1,32 @@
 # Atenea - AI Avatar Video Generator
 
-Generate realistic talking head videos using SadTalker on your M3 Mac. Simply provide text input, and Atenea will create a video of a woman talking about the topic.
+Generate realistic talking head videos using AI. Simply provide text input, and Atenea will create a video of an avatar talking about the topic.
 
 ## Features
 
-- 🎙️ Text-to-speech using OpenAI TTS
-- 🎬 Realistic talking head video generation with SadTalker
-- 🚀 Optimized for M3 Mac with Metal (MPS) acceleration
-- 💻 Simple CLI interface
+- 🎙️ **Text-to-speech** using OpenAI TTS (multiple voices)
+- 🎬 **Multiple AI models**: SadTalker (fast) or Hallo2 (better quality)
+- 🚀 **GPU acceleration**: Optimized for NVIDIA GPUs on RunPod
+- 💻 **Simple CLI interface**: Easy to use command-line tool
+- 📦 **Audio caching**: Avoid regenerating identical speech
+- 🛡️ **Memory-optimized**: Conservative mode for stability
 
 ## Performance
 
-On M3 Mac with 16GB RAM:
+### RunPod RTX 4090 (Recommended)
 
-- **1-minute video**: ~8-15 minutes generation time
-- **Resolution**: 512×512 (optimized for 16GB RAM)
-- **Frame rate**: 25 FPS
+| Model | Time (60s video) | Quality | Cost |
+|-------|------------------|---------|------|
+| **SadTalker** | 3-4 minutes | Good | ~$0.05 |
+| **Hallo2** | 5-8 minutes | Excellent | ~$0.07 |
+
+### Local M3 Mac (16GB RAM)
+
+| Model | Time (60s video) | Quality |
+|-------|------------------|---------|
+| **SadTalker** (CPU) | 8-15 minutes | Good |
+
+**Recommendation**: Use RunPod GPU for faster, better results. See [RUNPOD_SETUP.md](RUNPOD_SETUP.md).
 
 ## Prerequisites
 

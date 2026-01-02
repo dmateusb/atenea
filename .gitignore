@@ -51,7 +51,10 @@ output.mp4
 # SadTalker (external repository - cloned during setup)
 sadtalker/
 
-# SadTalker checkpoints (large files)
+# Hallo2 (external repository - cloned during setup)
+hallo2/
+
+# Model checkpoints (large files)
 checkpoints/
 gfpgan/
 

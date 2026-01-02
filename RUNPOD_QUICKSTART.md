@@ -183,10 +183,12 @@ npm run generate -- \
 
 ## Performance Reference (RTX 4090)
 
-| Mode          | Resolution | Time (60s audio) | VRAM Usage |
-|---------------|------------|------------------|------------|
-| Default       | 512x512    | ~4 minutes       | ~18 GB     |
-| Conservative  | 384x384    | ~3 minutes       | ~12 GB     |
+| Model         | Resolution | Time (60s audio) | VRAM Usage | Quality    |
+|---------------|------------|------------------|------------|------------|
+| SadTalker     | 512x512    | 3-4 minutes      | ~18 GB     | Good       |
+| SadTalker     | 384x384    | 2-3 minutes      | ~12 GB     | Good       |
+| **Hallo2**    | 512x512    | 5-8 minutes      | ~20 GB     | Excellent  |
+| **Hallo2**    | 384x384    | 4-5 minutes      | ~12 GB     | Very Good  |
 
 ## Cost Estimate
 

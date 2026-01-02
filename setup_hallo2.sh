@@ -43,7 +43,8 @@ fi
 
 # Install requirements
 if [ -f "requirements.txt" ]; then
-    pip install -r requirements.txt --quiet
+    # Use --ignore-installed for system packages like blinker
+    pip install -r requirements.txt --ignore-installed blinker 2>&1 | grep -v "WARNING: mediapipe" || true
     echo "   ✅ Dependencies installed"
 else
     echo "   ⚠️  No requirements.txt found, installing common dependencies..."
@@ -56,7 +57,8 @@ else
         einops \
         imageio \
         imageio-ffmpeg \
-        av
+        av \
+        --ignore-installed blinker
 fi
 
 cd ..
