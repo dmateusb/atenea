@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx src/cli.ts",
+    "generate": "tsx src/cli.ts generate",
     "build": "tsc",
     "start": "node dist/cli.js",
     "typecheck": "tsc --noEmit",
