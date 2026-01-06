@@ -4,3 +4,11 @@ export interface TTSOptions {
   model: string;
   outputPath: string;
 }
+
+export interface GenerateVideoParams {
+  imagePath: string;
+  audioPath: string;
+  outputPath: string;
+  fps?: number;
+  steps?: number;
+}

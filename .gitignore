@@ -1,33 +1,49 @@
+# Node.js
+node_modules/
+dist/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
 # Python
+venv/
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-venv/
-env/
-ENV/
-*.egg-info/
-dist/
-build/
-*.egg
 
-# Node
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+# Hallo2
+hallo2/
+checkpoints/
+pretrained_models/
 
-# Environment variables
-.env
-.env.local
-.env.*.local
-runpod.env
-*.env
-!.env.example
+# Data directories
+data/images/*
+!data/images/.gitkeep
+data/audio/*
+!data/audio/.gitkeep
+data/videos/*
+!data/videos/.gitkeep
 
-# IDEs
+# Configs
+configs/*.yaml
+!configs/.gitkeep
+
+# Output files
+*.mp4
+*.mp3
+*.wav
+output.*
+input.txt
+
+# IDE
 .vscode/
 .idea/
 *.swp
@@ -35,64 +51,9 @@ runpod.env
 *~
 .DS_Store
 
-# Generated content
-# Keep cached audio files (speech_<hash>.mp3) for reuse
-data/audio/speech_[0-9]*.mp3
-data/audio/*.wav
-!data/audio/.gitkeep
+# Testing
+coverage/
+.vitest/
 
-# Videos
-videos/
-*.mp4
-*.avi
-*.mov
-output.mp4
-
-# SadTalker (external repository - cloned during setup)
-sadtalker/
-
-# Hallo2 (external repository - cloned during setup)
-hallo2/
-
-# Model checkpoints (large files)
-checkpoints/
-gfpgan/
-
-# Temporary files
-*.tmp
-*.cache
-.cache/
-tmp/
-temp/
-2025_*/
-
-# Logs
-*.log
-logs/
-
-# OS
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Package files (keep package-lock for consistency)
-# package-lock.json  # Uncomment if you want to ignore it
-
-# Python local configs
-*.cfg
-!setup.cfg
-
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb
-
-# Model weights (if you want to avoid uploading large models)
-*.pth
-*.safetensors
-*.ckpt
-*.pt
-
-# Keep example files
-!example.png
-!example.mp3
-!example.txt
+# Build
+*.tsbuildinfo

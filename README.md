@@ -1,246 +1,216 @@
-# Atenea - AI Avatar Video Generator
+# Atenea-Hallo2
 
-Generate realistic talking head videos using AI. Simply provide text input, and Atenea will create a video of an avatar talking about the topic.
+AI Avatar Video Generator using Hallo2 - Professional talking head videos with natural expressions and lip sync.
 
 ## Features
 
-- 🎙️ **Text-to-speech** using OpenAI TTS (multiple voices)
-- 🎬 **Multiple AI models**: SadTalker (fast) or Hallo2 (better quality)
-- 🚀 **GPU acceleration**: Optimized for NVIDIA GPUs on RunPod
-- 💻 **Simple CLI interface**: Easy to use command-line tool
-- 📦 **Audio caching**: Avoid regenerating identical speech
-- 🛡️ **Memory-optimized**: Conservative mode for stability
-
-## Performance
-
-### RunPod RTX 4090 (Recommended)
-
-| Model | Time (60s video) | Quality | Cost |
-|-------|------------------|---------|------|
-| **SadTalker** | 3-4 minutes | Good | ~$0.05 |
-| **Hallo2** | 5-8 minutes | Excellent | ~$0.07 |
-
-### Local M3 Mac (16GB RAM)
-
-| Model | Time (60s video) | Quality |
-|-------|------------------|---------|
-| **SadTalker** (CPU) | 8-15 minutes | Good |
-
-**Recommendation**: Use RunPod GPU for faster, better results. See [RUNPOD_SETUP.md](RUNPOD_SETUP.md).
+- **Text-to-Speech**: OpenAI TTS with voice selection (nova, alloy, echo, fable, onyx, shimmer)
+- **Audio Caching**: Deterministic hash-based caching to avoid regenerating identical audio
+- **Hallo2 Integration**: State-of-the-art video generation with natural expressions and lip movements
+- **Simple CLI**: Easy-to-use command-line interface
+- **Automated Pipeline**: End-to-end orchestration from text to video
 
 ## Prerequisites
 
-- macOS with M3 chip
-- Python 3.10 or higher
-- Node.js 20 or higher
+- Node.js 20+
+- Python 3.10+
+- ffmpeg
+- CUDA-capable GPU (recommended for faster generation)
 - OpenAI API key
-- Git
 
-## Installation
+## Quick Start
 
-### 1. Clone and setup
+### 1. Installation
+
+Run the automated setup script:
 
 ```bash
-# Install dependencies and setup SadTalker
-chmod +x setup.sh
-./setup.sh
+npm run setup
 ```
 
 This will:
-
-- Create Python virtual environment
-- Install PyTorch with Metal (MPS) support
-- Clone and setup SadTalker
-- Download model checkpoints (~2-3GB)
 - Install Node.js dependencies
+- Create Python virtual environment
+- Install Python dependencies
+- Clone Hallo2 repository
+- Install Hallo2 dependencies
+- Create necessary directories
 
-### 2. Configure environment
+### 2. Configuration
 
-```bash
-# Create .env file with your OpenAI API key
-cp .env.example .env
-# Edit .env and add your API key
-```
-
-### 3. Add avatar image
-
-Place a photo of a woman in `data/images/avatar.png`. This will be the face used in generated videos.
-
-**Image requirements:**
-
-- Clear, front-facing photo
-- Good lighting
-- Neutral background recommended
-- PNG or JPG format
-- Minimum 512×512 pixels
-
-## Usage
-
-### Generate a video
-
-1. Create `input.txt` with your text content:
-
-```txt
-Welcome to today's discussion about artificial intelligence and its impact on modern society.
-AI is transforming how we work, communicate, and solve complex problems.
-```
-
-2. Run the generator:
+Edit `.env` file and add your OpenAI API key:
 
 ```bash
-npm run dev -- generate
-```
-
-This will:
-
-- Convert your text to speech using OpenAI TTS (nova voice)
-- Generate a talking head video using SadTalker
-- Save the result to `output.mp4`
-
-### Advanced options
-
-```bash
-# Custom input file
-npm run dev -- generate --input my-script.txt
-
-# Custom output path
-npm run dev -- generate --output videos/presentation.mp4
-
-# Different voice (alloy, echo, fable, onyx, nova, shimmer)
-npm run dev -- generate --voice alloy
-
-# Custom avatar image
-npm run dev -- generate --avatar photos/my-avatar.png
-```
-
-### Full example
-
-```bash
-npm run dev -- generate \
-  --input scripts/intro.txt \
-  --avatar images/host.png \
-  --output videos/intro.mp4 \
-  --voice shimmer
-```
-
-## Project Structure
-
-```
-atenea/
-├── data/
-│   ├── images/          # Avatar images
-│   │   └── avatar.png   # Default avatar
-│   └── audio/           # Generated audio files
-├── videos/              # Generated videos
-├── src/
-│   ├── cli.ts           # CLI interface
-│   ├── tts.ts           # Text-to-speech
-│   ├── video-generator.ts  # Video generation
-│   └── types.ts         # TypeScript types
-├── python/
-│   └── generate_video.py   # SadTalker wrapper
-├── sadtalker/           # SadTalker repository (auto-cloned)
-├── checkpoints/         # Model weights (auto-downloaded)
-├── input.txt            # Your text input
-└── output.mp4           # Generated video
-```
-
-## Configuration
-
-### TTS Voices
-
-Available OpenAI TTS voices:
-
-- `nova` - Female, warm (default)
-- `shimmer` - Female, expressive
-- `alloy` - Gender-neutral, balanced
-- `echo` - Male, calm
-- `fable` - Male, storytelling
-- `onyx` - Male, authoritative
-
-Configure in `.env`:
-
-```bash
+OPENAI_API_KEY=sk-your-key-here
 TTS_VOICE=nova
 TTS_MODEL=tts-1
 ```
 
-### Video Generation
+### 3. Download Hallo2 Models
 
-Default settings optimized for M3 16GB:
+Follow the instructions in `hallo2/README.md` to download pretrained models.
 
-- Resolution: 512×512
-- Batch size: 2
-- Device: MPS (Metal)
-- Enhancement: Disabled (for speed)
+Typically, you'll need to download models to `hallo2/pretrained_models/`.
 
-To modify, edit `python/generate_video.py`.
+### 4. Prepare Your Assets
+
+- Add an avatar image to `data/images/avatar.png`
+- Create a text file `input.txt` with your script
+
+### 5. Generate Video
+
+```bash
+npm run generate
+```
+
+Or with custom options:
+
+```bash
+npm run generate -- \
+  --input input.txt \
+  --avatar data/images/avatar.png \
+  --output output.mp4 \
+  --voice nova \
+  --fps 25 \
+  --steps 40
+```
+
+## CLI Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-i, --input <file>` | Input text file | `input.txt` |
+| `-a, --avatar <image>` | Avatar image path | `data/images/avatar.png` |
+| `-o, --output <file>` | Output video path | `output.mp4` |
+| `-v, --voice <voice>` | TTS voice | `nova` |
+| `--fps <number>` | Frame rate | `25` |
+| `--steps <number>` | Inference steps (40=balanced, 50=high quality) | `40` |
+
+### Available TTS Voices
+
+- `nova` - Balanced and natural (default)
+- `alloy` - Neutral and clear
+- `echo` - Male voice
+- `fable` - British accent
+- `onyx` - Deep male voice
+- `shimmer` - Soft female voice
+
+## Architecture
+
+### TypeScript Layer (src/)
+- `cli.ts` - Command-line interface
+- `tts.ts` - OpenAI TTS with caching
+- `video-generator.ts` - Python process orchestration
+- `types.ts` - TypeScript type definitions
+
+### Python Layer (python/)
+- `hallo2_inference.py` - Main orchestration script
+- `audio_converter.py` - MP3 to WAV conversion (16kHz mono)
+- `config_generator.py` - YAML config generation for Hallo2
+
+### Pipeline Flow
+
+```
+Text Input → OpenAI TTS → MP3 Audio → WAV Conversion → Hallo2 Config → Hallo2 Inference → Output Video
+```
+
+## Performance
+
+- RTX 4090: ~5-8 minutes for 1-minute video
+- RTX 3090: ~8-12 minutes for 1-minute video
+- CPU only: Not recommended (very slow)
+
+## Project Structure
+
+```
+atenea-hallo2/
+├── src/                    # TypeScript source
+│   ├── cli.ts             # CLI interface
+│   ├── tts.ts             # TTS generation
+│   ├── video-generator.ts # Video orchestration
+│   └── types.ts           # Type definitions
+├── python/                # Python scripts
+│   ├── hallo2_inference.py    # Main inference script
+│   ├── audio_converter.py     # Audio conversion
+│   └── config_generator.py    # Config generation
+├── scripts/               # Setup scripts
+│   └── setup.sh          # Automated setup
+├── data/                  # Data directories
+│   ├── images/           # Avatar images
+│   ├── audio/            # Generated audio (cached)
+│   └── videos/           # Output videos
+├── configs/              # Generated YAML configs
+└── hallo2/              # Hallo2 repository (cloned)
+```
 
 ## Troubleshooting
 
-### "MPS not available"
+### ffmpeg not found
 
-Ensure you're running on M3 Mac with macOS 13+ and PyTorch 2.0+.
+Install ffmpeg:
+- macOS: `brew install ffmpeg`
+- Ubuntu: `sudo apt-get install ffmpeg`
+- Windows: Download from [ffmpeg.org](https://ffmpeg.org)
 
-### Out of memory
+### CUDA out of memory
 
-- Close other applications
-- Reduce resolution in `generate_video.py`
-- Use CPU instead of MPS (slower)
+Try reducing resolution:
+```bash
+npm run generate -- --resolution 512
+```
 
-### Slow generation
+### Hallo2 models not found
 
-Expected for M3 16GB. For faster processing:
+Make sure you've downloaded the pretrained models to `hallo2/pretrained_models/`.
 
-- Lower resolution (256×256)
-- Reduce frame rate
-- Use cloud GPU (see `ai-avatar-generation-summary.md`)
+See `hallo2/README.md` for download instructions.
 
-### Poor video quality
+### Python module not found
 
-- Use higher quality avatar image
-- Ensure good lighting in avatar photo
-- Try different voice/audio settings
-
-## Cost Estimate
-
-- **OpenAI TTS**: ~$0.015 per 1,000 characters
-- **1-minute script (~1,000 chars)**: ~$0.015
-- **Video generation**: Free (local processing)
-
-**Total per video**: ~$0.01-0.02
-
-Compare to:
-
-- Google Veo: $0.20 per 8 seconds
-- HeyGen/Synthesia: $0.10-0.30 per video
+Activate the virtual environment and reinstall dependencies:
+```bash
+source venv/bin/activate
+pip install -r requirements.txt
+cd hallo2
+pip install -r requirements.txt
+```
 
 ## Development
 
+### Build TypeScript
+
 ```bash
-# Run in dev mode
-npm run dev
-
-# Build
 npm run build
+```
 
-# Type check
+### Type Checking
+
+```bash
 npm run typecheck
+```
 
-# Lint
-npm run lint
+### Format Code
 
-# Format
+```bash
 npm run format
 ```
+
+## Best Practices
+
+1. **Avatar Images**: Use high-quality frontal face photos with clear features
+2. **Text Input**: Keep sentences natural and conversational for best lip sync
+3. **Audio Caching**: The system automatically caches generated audio files to avoid redundant OpenAI API calls
+4. **Steps Parameter**: Use 40 steps for balanced quality/speed, 50 for higher quality
+
+## Credits
+
+- [Hallo2](https://github.com/fudan-generative-vision/hallo2) - Video generation
+- [OpenAI](https://openai.com) - Text-to-Speech API
 
 ## License
 
 MIT
 
-## Credits
+## Support
 
-- [SadTalker](https://github.com/OpenTalker/SadTalker) - Talking head generation
-- OpenAI - Text-to-speech API
-# atenea
-# atenea
+For issues and questions, please open an issue on GitHub.

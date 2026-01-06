@@ -17,9 +17,9 @@ const __dirname = path.dirname(__filename);
 const program = new Command();
 
 program
-  .name('atenea')
-  .description('AI Avatar Video Generator using SadTalker')
-  .version('0.1.0');
+  .name('atenea-hallo2')
+  .description('AI Avatar Video Generator using Hallo2')
+  .version('1.0.0');
 
 program
   .command('generate')
@@ -27,27 +27,13 @@ program
   .option('-i, --input <file>', 'Input text file', 'input.txt')
   .option('-a, --avatar <image>', 'Avatar image path', 'data/images/avatar.png')
   .option('-o, --output <file>', 'Output video path', 'output.mp4')
-  .option('-v, --voice <voice>', 'TTS voice (nova, alloy, echo, etc.)', 'nova')
-  .option('-m, --model <model>', 'AI model (sadtalker, hallo2)', 'sadtalker')
-  .option('--conservative', 'Use memory-optimized wrapper (for OOM issues)')
+  .option('-v, --voice <voice>', 'TTS voice (nova, alloy, echo, fable, onyx, shimmer)', 'nova')
+  .option('--fps <number>', 'Frame rate (default: 25)', '25')
+  .option('--steps <number>', 'Inference steps - 40=balanced, 50=high quality (default: 40)', '40')
   .action(async (options) => {
     const spinner = ora();
 
     try {
-      // Validate model selection
-      const validModels = ['sadtalker', 'hallo2'];
-      if (!validModels.includes(options.model)) {
-        console.error(chalk.red(`❌ Invalid model: ${options.model}`));
-        console.log(chalk.yellow(`   Valid models: ${validModels.join(', ')}`));
-        process.exit(1);
-      }
-
-      // Set conservative mode if requested
-      if (options.conservative) {
-        process.env.USE_CONSERVATIVE = '1';
-        console.log(chalk.blue('🛡️  Using conservative mode (memory-optimized)\n'));
-      }
-
       // Validate OpenAI API key
       if (!process.env.OPENAI_API_KEY) {
         console.error(
@@ -72,7 +58,7 @@ program
       } catch {
         spinner.fail(`Avatar image not found: ${avatarPath}`);
         console.log(
-          chalk.yellow('\nPlease add an avatar image (woman photo) to:')
+          chalk.yellow('\nPlease add an avatar image to:')
         );
         console.log(chalk.cyan('data/images/avatar.png'));
         process.exit(1);
@@ -80,21 +66,35 @@ program
 
       // Setup paths
       const audioDir = path.join(__dirname, '..', 'data', 'audio');
-      const tempAudioPath = path.join(audioDir, 'temp.mp3'); // Will be replaced by hash-based name
+      const tempAudioPath = path.join(audioDir, 'temp.mp3');
       const videoPath = path.resolve(options.output);
 
-      console.log(chalk.blue('\n🎬 Starting video generation\n'));
+      console.log(chalk.blue('\n🎬 Starting Hallo2 video generation\n'));
 
-      // Generate audio from text (returns actual cached path)
+      // Generate audio from text
       spinner.start('Generating speech from text...');
       process.env.TTS_VOICE = options.voice;
       const audioPath = await textToSpeech(inputText, tempAudioPath);
       spinner.succeed('Speech generated');
 
+      // Parse numeric options
+      const fps = parseInt(options.fps, 10);
+      const steps = parseInt(options.steps, 10);
+
+      if (isNaN(fps) || fps <= 0) {
+        console.error(chalk.red('❌ Invalid FPS value'));
+        process.exit(1);
+      }
+
+      if (isNaN(steps) || steps <= 0) {
+        console.error(chalk.red('❌ Invalid steps value'));
+        process.exit(1);
+      }
+
       // Generate video
       spinner.start(
         chalk.yellow(
-          'Generating talking head video (3-4 min on GPU, 8-15 min on CPU for 1-min video)...'
+          'Generating talking head video with Hallo2 (5-8 min on RTX 4090 for 1-min video)...'
         )
       );
 
@@ -102,7 +102,8 @@ program
         imagePath: avatarPath,
         audioPath,
         outputPath: videoPath,
-        model: options.model as 'sadtalker' | 'hallo2',
+        fps,
+        steps,
       });
 
       spinner.succeed('Video generated successfully!');

@@ -1,35 +1,29 @@
 import { spawn } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import type { GenerateVideoParams } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export interface GenerateVideoParams {
-  imagePath: string;
-  audioPath: string;
-  outputPath: string;
-  model?: 'sadtalker' | 'hallo2';
-}
-
 export async function generateVideo(
   params: GenerateVideoParams
 ): Promise<string> {
-  const { imagePath, audioPath, outputPath, model = 'sadtalker' } = params;
+  const { imagePath, audioPath, outputPath, fps = 25, steps = 40 } = params;
 
   const pythonScript = path.join(
     __dirname,
     '..',
     'python',
-    'generate_video.py'
+    'hallo2_inference.py'
   );
   const venvPython = path.join(__dirname, '..', 'venv', 'bin', 'python3');
 
-  console.log('🎬 Starting video generation...');
-  console.log(`🤖 Model: ${model.toUpperCase()}`);
+  console.log('🎬 Starting Hallo2 video generation...');
   console.log(`📸 Image: ${imagePath}`);
   console.log(`🎵 Audio: ${audioPath}`);
   console.log(`🎥 Output: ${outputPath}`);
+  console.log(`⚙️  FPS: ${fps}, Steps: ${steps}`);
 
   return new Promise((resolve, reject) => {
     const args = [
@@ -40,8 +34,10 @@ export async function generateVideo(
       audioPath,
       '--output',
       outputPath,
-      '--model',
-      model,
+      '--fps',
+      fps.toString(),
+      '--steps',
+      steps.toString(),
     ];
 
     const process = spawn(venvPython, args);
